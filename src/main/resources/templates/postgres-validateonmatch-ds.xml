@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+
+  <datasource jndi-name="java:jboss/datasources/TestDS" pool-name="TestDS" 
+        use-java-context="true" use-ccm="true" enabled="true">
+
+    <connection-url>jdbc:postgresql://localhost:5432/crashrec</connection-url>
+    <driver>jdbc-driver.jar</driver>
+    <pool>
+      <min-pool-size>1</min-pool-size>
+      <max-pool-size>20</max-pool-size>
+      <!-- <prefill>true</prefill>  -->
+    </pool>
+    
+    <!-- this should lead to quickest recovery from outage but creates higher load to database -->
+    <!-- this cycles around all the connections in pool and tries to find running one. when no one is valid then new one is created -->
+    <validation>
+      <validate-on-match>true</validate-on-match>
+      <use-fast-fail/> <!-- this means creating new connection immediatelly after first connection fail in pool -->
+      <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker" />
+      <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter" />
+    </validation>
+    
+    <security>
+      <user-name>crashrec</user-name>
+      <password>crashrec</password>
+    </security>
+  </datasource>
+</datasources>

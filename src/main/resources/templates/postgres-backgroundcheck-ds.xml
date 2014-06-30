@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+
+  <datasource jndi-name="java:jboss/datasources/TestDS" pool-name="TestDS" 
+        use-java-context="true" use-ccm="true" enabled="true">
+
+    <connection-url>jdbc:postgresql://localhost:5432/crashrec</connection-url>
+    <driver>jdbc-driver.jar</driver>
+    <pool>
+      <min-pool-size>1</min-pool-size>
+      <max-pool-size>20</max-pool-size>
+      <!-- <prefill>true</prefill>  -->
+    </pool>
+    
+    <validation>
+      <background-validation>true</background-validation>
+      <background-validation-millis>10</background-validation-millis> <!-- 0 means disabled feature, should not be the same as 
+         idle-timeout-minutes which indicates the maximum time in minutes a connection may be idle before being closed -->
+      <validate-on-match>false</validate-on-match> <!-- when previous is set then use this. see validateonmatch-ds.xml -->
+      <check-valid-connection-sql>select 1</check-valid-connection-sql>
+      <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter" />
+    </validation>
+    
+    <security>
+      <user-name>crashrec</user-name>
+      <password>crashrec</password>
+    </security>
+  </datasource>
+</datasources>
