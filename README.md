@@ -23,7 +23,7 @@ If you do have just simple datasource then step 11 will mean that you will get c
 As solution check https://access.redhat.com/site/solutions/156103
 Generally you can
 
-<b>1)</b> Flush the connection pool of datasource
+<b>1)</b> Flush the connection pool of datasource (after database is restarted - step 10)
 /deployment=datasources-reconnection.war/subsystem=datasources/data-source=java\:jboss\/datasources\/TestDS:read-resource()
 
 <b>2)</b> Define datasource for being validated on match (&lt;validate-on-match&gt;). see postgres-validateonmatch-ds.xml
