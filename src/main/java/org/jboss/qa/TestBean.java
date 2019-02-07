@@ -5,13 +5,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.sql.DataSource;
 
 @Stateless
 public class TestBean {
-  @Resource(lookup = "java:jboss/datasources/TestDS")
+  @Resource(lookup = "java:jboss/datasources/ExampleDS")
   DataSource ds;
+
+  @Resource
+  EJBContext ctx;
 
   public void go() {
     Connection c = null;
@@ -25,6 +29,7 @@ public class TestBean {
       String nativeInsert = c.nativeSQL("INSERT INTO test (id) VALUES (3)");
       Statement statement = c.createStatement();
       statement.execute(nativeInsert);
+      ctx.setRollbackOnly();
       
     } catch (SQLException e) {
       e.printStackTrace();

@@ -1,6 +1,8 @@
 package org.jboss.qa;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.EJBContext;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 
@@ -18,6 +20,10 @@ public class TestEntityBeanProcessor implements TestEntityBeanProcessorRemote {
   
   @EJB
   TestEntityHelperLocal entityHelperLocal;
+
+  @Resource
+  EJBContext ctx;
+
   
   public void doStuffRemote(String idKey) {
     log.info("doStuffRemote");
@@ -29,5 +35,6 @@ public class TestEntityBeanProcessor implements TestEntityBeanProcessorRemote {
     log.info("doStuffLocal");
     entityHelperLocal.initTestEntity(idKey, 42);
     entityHelperLocal.updateTestEntity(idKey);
+    ctx.setRollbackOnly();
   }
 }
