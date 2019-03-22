@@ -10,12 +10,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.logging.Logger;
 import org.jboss.qa.cdi.CDIBean;
 
 
 @WebServlet(name="CDITestServlet", urlPatterns={"/cdi"})
 public class CDITestServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private  static final Logger LOGGER = Logger.getLogger(CDITestServlet.class);
     
     @Inject
     CDIBean bean;
@@ -24,7 +26,14 @@ public class CDITestServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        bean.goWithMe();
+
+        if(request.getParameter("notx") != null) {
+            LOGGER.info("Going 'goWithoutTxn'");
+            bean.goWithoutTxn();
+        } else {
+            LOGGER.info("Going 'goWithMe'");
+            bean.goWithMe();
+        }
         out.println("OK");
     }
 }

@@ -3,7 +3,7 @@
     <persistence-unit name="jbossts-crashrec">
        <jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
        <properties>
-           <property name="hibernate.hbm2ddl.auto" value="update"/>
+           <property name="hibernate.hbm2ddl.auto" value="update"/> 
 	       <!-- <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect" /> -->
            <!-- <property name="hibernate.temp.use_jdbc_metadata_defaults" value="" />  -->
            <property name="hibernate.show_sql" value="true"/>

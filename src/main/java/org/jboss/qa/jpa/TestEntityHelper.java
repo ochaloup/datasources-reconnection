@@ -1,8 +1,5 @@
 package org.jboss.qa.jpa;
 
-import java.util.Map.Entry;
-import java.util.Properties;
-
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -37,12 +34,13 @@ public class TestEntityHelper implements TestEntityHelperRemote, TestEntityHelpe
   public TestEntity initTestEntity(String entityPK, int initValue) {
     TestEntity entity = getTestEntity(entityPK);
     
+    /*
     Properties props = System.getProperties();
     for(Entry<Object, Object> entryToOverride: props.entrySet()) {
       System.out.println(entryToOverride.getKey()+ " => " + entryToOverride.getValue());
       log.info(entryToOverride.getKey()+ " => " + entryToOverride.getValue());
     }
-
+    */
 
     if (entity == null) {
       entity = new TestEntity(entityPK, initValue);

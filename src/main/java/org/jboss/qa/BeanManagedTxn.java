@@ -21,7 +21,7 @@ public class BeanManagedTxn {
     public void go() {
         System.out.println("bean managed...");
         try {
-            // txn.begin();
+            txn.begin();
             entityHelperLocal.initTestEntity("somethighsomethig", 33);
             txn.commit();
         } catch (Exception e) {

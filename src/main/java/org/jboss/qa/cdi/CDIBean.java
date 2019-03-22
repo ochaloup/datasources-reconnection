@@ -4,11 +4,13 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
+import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.transaction.UserTransaction;
 
 import org.jboss.logging.Logger;
+import org.jboss.qa.TestBean;
 
 @RequestScoped
 public class CDIBean {
@@ -20,17 +22,40 @@ public class CDIBean {
     @Inject
     TransactionManager tm;
 
+    @Inject
+    TransactionSynchronizationRegistry registry;
+
+    @Inject
+    CDIBean self;
+
+    @Inject
+    TestBean bean;
+
     @Transactional(TxType.REQUIRED)
     public void goWithMe() {
         try {
-            tm.rollback();
-        } catch (IllegalStateException | SecurityException | SystemException e) {
-            LOG.errorf(e, "rollback failed");
+            LOG.infof("transaction manager '%s' and status '%s', registry is '%s'", tm, tm.getStatus(), registry);
+        } catch (SystemException e) {
+            LOG.error("Cannot get status of transaction", e);
         }
+
+        self.goWithoutTxn();
+    }
+
+    public void goWithoutTxn() {
         try {
-            tm.setRollbackOnly();
-        } catch (IllegalStateException | SystemException e) {
-            LOG.errorf(e, "set rollback only failed");
+            LOG.infof("transaction manager '%s' and status '%s', registry is '%s'", tm, tm.getStatus(), registry);
+            txn.setTransactionTimeout(0);
+            txn.begin();
+            bean.go();
+            txn.commit();
+        } catch (Exception e) {
+            LOG.errorf(e, "Cannot begin and commit transaction '%s'", txn);
+            try {
+                txn.rollback();
+            } catch (Exception re) {
+                LOG.debugf(re, "Cannot rollback transaction '%s'", txn);
+            }
         }
     }
 }

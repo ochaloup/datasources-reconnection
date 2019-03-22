@@ -4,40 +4,36 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.EJBContext;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.sql.DataSource;
 
 import org.jboss.logging.Logger;
 
-@Stateless
-public class TestBean {
-    private static final Logger LOGGER = Logger.getLogger(TestBean.class);
+@Singleton
+@Startup
+public class TestBeanTableCreator {
+    private static final Logger LOGGER = Logger.getLogger(TestBeanTableCreator.class);
 
     @Resource(lookup = "java:jboss/datasources/ExampleDS")
     DataSource ds;
 
-    @Resource
-    EJBContext ctx;
-
-    public void go() {
+    @PostConstruct
+    public void initCreateTestTable() {
         Connection c = null;
 
         try {
             c = ds.getConnection();
             Statement statement = c.createStatement();
 
-            LOGGER.debugf("Inserting to table 'test' id to 3, of datasource '%s' and conection '%s'", ds.toString(), c.toString());
+            LOGGER.debugf("Creating table 'test of datasource '%s' and conection '%s'", ds.toString(), c.toString());
 
-            // String nativeCreate = c.nativeSQL("CREATE TABLE test (id int)");
-            String nativeInsert = c.nativeSQL("INSERT INTO test (id) VALUES (3)");
-            statement.execute(nativeInsert);
-            ctx.setRollbackOnly();
-
+            String nativeCreate = c.nativeSQL("CREATE TABLE test (id int)");
+            statement.execute(nativeCreate);
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Cannot insert to table 'test' id = 3", e);
+            throw new RuntimeException("Cannot create table 'test'", e);
         } finally {
             if (c != null) {
                 try {
@@ -47,6 +43,5 @@ public class TestBean {
                 }
             }
         }
-
     }
 }
